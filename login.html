@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta  name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+	<title>Instagram</title>
+	<link rel="stylesheet" href="F:/my  web/css/bootstrap.css">  
+	<style type="text/css">
+		#color{width:14.4rem;
+			height:24.54rem;
+			overflow:hidden;
+		}
+		#color img{
+			width:51.48rem;
+			height:51.48rem;
+			position: absolute;
+			top: -13rem;
+			left:-4.4rem;
+			z-index: -2;
+
+			-webkit-animation:play 50s linear infinite;
+			-moz-animation:play 50s linear infinite;
+			animation:play 50s linear infinite;
+		}
+		@-webkit-keyframes play{
+			0%  {-webkit-transform:rotate(0deg);
+			}
+			100% {-webkit-transform:rotate(-360deg);
+			}
+		}
+		@-moz-keyframes play{
+			0%  {-moz-transform:rotate(0deg);
+			}
+			100% {
+				-moz-transform:rotate(-360deg);
+			}
+		}
+		@keyframes play{
+			0%  {
+				transform:rotate(0deg);
+			}
+			100% {
+				transform:rotate(-360deg);
+			}
+		}
+		a,input,button{-webkit-tap-highlight-color:rgba(0,0,0,0);}
+		input,button{
+					-webkit-appearance:none;
+					border-radius: 0;
+		}
+		body *{-webkit-user-select:none;
+				margin:0; padding: 0;border:0;
+				font-family:Arial, Helvetica, sans-serif;
+				
+		}
+		form{margin:0;padding: 0;}
+		html,body{
+				width:100%;
+				height: 100%;
+				overflow:hidden;
+		}
+		body{color: white;
+			-webkit-text-size-adjust:100%;
+				
+
+		}
+		header{
+			    height:175px;width:100%; 
+			    text-align: center;
+		}
+
+		#Instagram{
+					
+					font-size: 36px;
+					position:relative;
+					top: 110px;
+					
+		}
+		form{text-align: center;}
+		input{ color: white;
+			   height:49px;
+			   width: 12.24rem;
+			   margin-bottom: 12px;
+			   padding-left: 0.66rem;
+			   border:none;
+			   background-color: rgba(255,255,255,0.4);
+		} 
+
+		footer{width: 100%;
+				height:49px;
+				text-align: center;
+				border-top: 1px solid white;
+				font-size: 14px;
+				line-height: 49px;
+				position:absolute;
+				bottom: 0;
+				left:0;
+
+		}
+
+		
+				
+        
+	</style>
+	
+	<!-- <script type="text/javascript">
+	    //用数组加动画渐变颜色
+		var arr=["#83484e","#784a55","#6c4d5d","#605166","#545571","#4b5976"];
+		setInterval(function(){
+					arr.splice(0,0,arr.pop());
+		},30);
+
+		var c=document.getElementById("c1");
+		var cxt=c.getContext("2d");
+		var grd=cxt.createLinearGradient(0,0,175,50);
+		grd.addColorStop(0,arr[0]);
+		grd.addColorStop(0.2,arr[1]);
+		grd.addColorStop(0.4,arr[2]);
+		grd.addColorStop(0.6,arr[3]);
+		grd.addColorStop(0.8,arr[4]);
+		grd.addColorStop(1,arr[5]);
+		cxt.fillStyle=grd;
+		cxt.fillRect(0,0,175,50);
+   	</script> -->
+	<script type="text/javascript" src="F:/my  web/javascript/jquery-3.1.1.min.js"></script>
+	<script src="F:/my  web/javascript/html5shiv.js"></script>
+	
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$("#footer").click(function(){
+				$("#dl").toggle();
+				$("#zc").toggle();
+				$("p").toggle();
+			});
+			// $("submit").click(function(){
+				
+			// });
+
+
+
+
+		});
+	</script>
+	<script>
+window.onload=function(){
+    var test=document.getElementsByTagName("body")[0].style;
+    if(typeof test.animation!="undefined"||typeof test.WebkitAnimation!="undefined"){
+        alert("浏览器支持CSS3动画！");
+    }else{
+        alert("浏览器不支持CSS3动画！");
+    }
+}
+</script>
+	<!-- <script type="text/javascript">
+			window.onload=function(){
+					var oSpan=document.createElement("span");
+					
+                       oSpan.style.width="2rem";
+                       oSpan.style.float="left";
+                      oSpan.style.backgroundImage="url('F:/my  web/color.png')";
+                       document.appendChild(oSpan);
+			};
+	</script> -->
+
+</head>
+<body>
+		<div id="dl"> <!-- 登录页面 -->
+			<header>
+				<h1 id="Instagram">Instagram</h1>
+			</header>
+			
+			<form action="">
+				<input type="text" name="user" value="" placeholder="Name" autofocus required>
+				<br>
+				<input type="password" name="password" value="" placeholder="Password" pattern="\d{5,10}" required/>
+				<br/>
+				<input type="submit" name="submit" value="登录" formaction=""/>
+				<br/>
+			</form>
+			
+		</div>
+		<!-- <canvas id="c1" width="400" height="400">
+		Your browser does not support the canvas element.
+		</canvas> -->
+		<div id="zc" style="display: none;">
+                         <!-- 注册页面 -->
+			<header>
+				<h1 id="Instagram">Instagram</h1>
+			</header>
+
+			<form action="F:/my  web/html/main.html">
+				<input type="emil" name="emil" value="" placeholder="电子邮箱" autofocus required>
+				<br/>
+				<input type="password" name="password" value="" placeholder="密码" pattern="\d{5,10}" required/>
+				<br/>
+				<input type="password" name="password" value="" placeholder="确认密码" pattern="\d{5,10}" required/>
+				<br/>
+				<input type="submit" name="submit" value="注册" formaction=""/>
+				<br/>	
+			</form>
+		</div>
+
+	<footer id="footer">
+			<p>没有账户？请注册</p>
+			<p style="display: none;">有账户了？请登录</p>
+	</footer>
+	
+	<div id="color"><img src="F:/my  web/color1.jpg"/></div>
+<script type="text/javascript">
+       (function(){
+       	var html=document.documentElement;
+       	var hWidth=window.screen.width;
+       	//console.log(hWidth);
+       	html.style.fontSize=hWidth/14.4+"px";
+       })()
+</script>
+</body>
+</html>
