@@ -1,0 +1,7 @@
+.imgListContainer{
+    height: 100px;
+    display: flex;
+}
+.imgListContainer img{
+    height: 100%;
+}

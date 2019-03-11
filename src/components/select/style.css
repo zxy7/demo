@@ -1,0 +1,55 @@
+.head {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid #f1f1f1;
+}
+.flex {
+  display: flex;
+}
+.content {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.content div {
+  /* width: 25%; */
+  /* flex:1 1 auto; */
+  min-width: 25%;
+  max-width: 50%;
+  /* flex:0 0 auto; */
+  padding: 5px 0px;
+}
+.hidden {
+  display: none;
+}
+.arrow {
+  width: 10px;
+  height: 10px;
+  box-sizing: border-box;
+  border-top: 5px solid rgba(0, 0, 0, 0);
+  border-right: 5px solid rgba(0, 0, 0, 0);
+  border-bottom: 5px solid red;
+  border-left: 5px solid rgba(0, 0, 0, 0);
+  position: absolute;
+  right: 10px;
+  top: 0;
+  bottom: 4px;
+  margin: auto 0;
+}
+.inputContainer {
+  position: relative;
+  text-align: left;
+  display: inline-block;
+  width: 200px;
+}
+.inputContainer input {
+  width: 100%;
+}
+.arrow.down {
+  transform: rotate(180deg);
+  top: 4px;
+  bottom: 0;
+}
+.active {
+  color: blue;
+  border-bottom: 2px solid bule;
+}
