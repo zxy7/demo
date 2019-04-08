@@ -1,9 +1,9 @@
-import React from "react";
-import "./style.css";
+import React from 'react';
+import './style.css';
 
 export default class Select extends React.Component {
   state = {
-    address: "",
+    address: '',
     isOpen: false,
     level: 3,
     selectedCode: this.props.selectData[0].code,
@@ -11,7 +11,7 @@ export default class Select extends React.Component {
     secondLevel: this.props.selectData[0].children[0].children[0].name,
     secondLists: this.props.selectData[0].children[0].children,
     thirdLists: this.props.selectData[0].children[0].children[0].children,
-    lists: this.props.selectData[0].children[0].children[0].children
+    lists: this.props.selectData[0].children[0].children[0].children,
   };
 
   toggleSelect = () => {
@@ -20,20 +20,20 @@ export default class Select extends React.Component {
   changeFirst = () => {
     this.setState({
       level: 1,
-      lists: this.props.selectData
+      lists: this.props.selectData,
     });
   };
 
   changeSecond = () => {
     this.setState({
       level: 2,
-      lists: this.state.secondLists
+      lists: this.state.secondLists,
     });
   };
   changeThird = () => {
     this.setState({
       level: 3,
-      lists: this.state.thirdLists
+      lists: this.state.thirdLists,
     });
   };
   handleChoose = item => {
@@ -46,9 +46,7 @@ export default class Select extends React.Component {
         thirdLists: this.setList(this.setList(item)[0]),
         firstLevel: item.name,
         secondLevel:
-          item.children.length === 1
-            ? item.children[0].children[0].name
-            : item.children[0].name
+          item.children.length === 1 ? item.children[0].children[0].name : item.children[0].name,
       });
     } else if (this.state.level === 2) {
       this.setState({
@@ -56,33 +54,26 @@ export default class Select extends React.Component {
         level: 3,
         lists: item.children,
         thirdLists: item.children,
-        secondLevel: item.name
+        secondLevel: item.name,
       });
     } else {
       if (item.children) {
         this.setState({
-          lists: item.children
+          lists: item.children,
         });
       } else {
         this.setState({
-          address:
-            this.state.firstLevel +
-            " " +
-            this.state.secondLevel +
-            " " +
-            item.name
+          address: this.state.firstLevel + ' ' + this.state.secondLevel + ' ' + item.name,
         });
         console.log(this.state.address);
       }
       this.setState({
-        selectedCode: item.code
+        selectedCode: item.code,
       });
     }
   };
   setList(item) {
-    return item.children.length === 1
-      ? item.children[0].children
-      : item.children;
+    return item.children.length === 1 ? item.children[0].children : item.children;
   }
   render() {
     return (
@@ -95,37 +86,25 @@ export default class Select extends React.Component {
             placeholder="请选择行政区域"
             onClick={this.toggleSelect}
           />
-          <div className={this.state.isOpen ? "arrow down" : "arrow"} />
+          <div className={this.state.isOpen ? 'arrow down' : 'arrow'} />
         </div>
-        <div className={this.state.isOpen ? "" : "hidden"}>
+        <div className={this.state.isOpen ? '' : 'hidden'}>
           <input type="text" placeholder="搜索行政规划" />
           <div className="head">
-            <div
-              onClick={this.changeFirst}
-              className={this.state.level === 1 ? "active" : ""}
-            >
+            <div onClick={this.changeFirst} className={this.state.level === 1 ? 'active' : ''}>
               {this.state.firstLevel}
             </div>
-            <div
-              onClick={this.changeSecond}
-              className={this.state.level === 2 ? "active" : ""}
-            >
+            <div onClick={this.changeSecond} className={this.state.level === 2 ? 'active' : ''}>
               {this.state.secondLevel}
             </div>
-            <div
-              onClick={this.changeThird}
-              className={this.state.level === 3 ? "active" : ""}
-            >
+            <div onClick={this.changeThird} className={this.state.level === 3 ? 'active' : ''}>
               请选择
             </div>
           </div>
           <div className="content flex">
             {this.state.lists.map(item => {
               return (
-                <div
-                  key={item.code}
-                  onClick={this.handleChoose.bind(this, item)}
-                >
+                <div key={item.code} onClick={this.handleChoose.bind(this, item)}>
                   {item.name}
                 </div>
               );

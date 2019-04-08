@@ -1,5 +1,5 @@
-import React from "react";
-import "./style.css";
+import React from 'react';
+import './style.css';
 export default class Pic extends React.Component {
   state = {
     imgList: [],
@@ -8,31 +8,29 @@ export default class Pic extends React.Component {
     canvasHistory: [],
     step: -1,
     lastX: null,
-    lastY: null
+    lastY: null,
   };
 
   cPush = () => {
     this.setState({
-      step: this.state.step + 1
+      step: this.state.step + 1,
     });
     // if (this.state.step < this.state.canvasHistory.length) {
     //   this.state.canvasHistory.length = this.state.step;
     // }
-    this.state.canvasHistory.push(
-      document.getElementById("canvas").toDataURL()
-    );
+    this.state.canvasHistory.push(document.getElementById('canvas').toDataURL());
     this.setState({
-      canvasHistory: this.state.canvasHistory
+      canvasHistory: this.state.canvasHistory,
     });
   };
   drawPic = (x, y, isDown) => {
-    let ctx = document.getElementById("canvas").getContext("2d");
-    console.log(x + "===" + y);
+    let ctx = document.getElementById('canvas').getContext('2d');
+    console.log(x + '===' + y);
     if (isDown) {
       ctx.beginPath();
-      ctx.strokeStyle = "red";
-      ctx.lineWidth = "2";
-      ctx.lineJoin = "round";
+      ctx.strokeStyle = 'red';
+      ctx.lineWidth = '2';
+      ctx.lineJoin = 'round';
       ctx.moveTo(this.state.lastX, this.state.lastY);
       ctx.lineTo(x, y);
       ctx.closePath();
@@ -40,7 +38,7 @@ export default class Pic extends React.Component {
     }
     this.setState({
       lastX: x,
-      lastY: y
+      lastY: y,
     });
   };
   readFile = e => {
@@ -50,8 +48,8 @@ export default class Pic extends React.Component {
     reader.readAsDataURL(file);
     reader.onload = e => {
       var img = new Image(),
-        canvas = document.getElementById("canvas"),
-        context = canvas.getContext("2d");
+        canvas = document.getElementById('canvas'),
+        context = canvas.getContext('2d');
       img.src = e.target.result;
       img.onload = () => {
         canvas.width = img.width;
@@ -64,31 +62,23 @@ export default class Pic extends React.Component {
   mousedown = e => {
     if (!this.state.isCircle) return;
     this.setState({
-      paint: true
+      paint: true,
     });
-    const canvas = document.getElementById("canvas");
-    this.drawPic(
-      e.pageX - canvas.offsetLeft,
-      e.pageY - canvas.offsetTop,
-      false
-    );
+    const canvas = document.getElementById('canvas');
+    this.drawPic(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop, false);
   };
   mousemove = e => {
     if (!this.state.isCircle) return;
     if (this.state.paint) {
-      const canvas = document.getElementById("canvas");
-      this.drawPic(
-        e.pageX - canvas.offsetLeft,
-        e.pageY - canvas.offsetTop,
-        true
-      );
+      const canvas = document.getElementById('canvas');
+      this.drawPic(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop, true);
     }
   };
   mouseup = () => {
     if (!this.state.isCircle) return;
     if (this.state.paint) {
       this.setState({
-        paint: false
+        paint: false,
       });
       this.cPush();
     }
@@ -97,14 +87,14 @@ export default class Pic extends React.Component {
     if (!this.state.isCircle) return;
     if (this.state.paint) {
       this.setState({
-        paint: false
+        paint: false,
       });
       this.cPush();
     }
   };
   undo = () => {
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext("2d");
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
     if (this.state.step > 0) {
@@ -118,28 +108,24 @@ export default class Pic extends React.Component {
       };
       this.setState({
         step: this.state.step - 1,
-        canvasHistory
+        canvasHistory,
       });
     } else {
-      console.log("不能再继续撤销了");
+      console.log('不能再继续撤销了');
     }
   };
   exportCanvas = () => {
     this.state.imgList.push({
-      src: this.state.canvasHistory[this.state.canvasHistory.length - 1]
+      src: this.state.canvasHistory[this.state.canvasHistory.length - 1],
     });
     this.setState({
-      imgList: this.state.imgList
+      imgList: this.state.imgList,
     });
   };
   render() {
     return (
       <div>
-        <input
-          type="file"
-          onChange={this.readFile}
-          accept="image/png, image/jpeg"
-        />
+        <input type="file" onChange={this.readFile} accept="image/png, image/jpeg" />
         <div>
           <canvas
             id="canvas"
@@ -151,7 +137,7 @@ export default class Pic extends React.Component {
         </div>
         <div>
           <button
-            className={this.state.isCircle ? "active" : ""}
+            className={this.state.isCircle ? 'active' : ''}
             onClick={() => {
               this.setState({ isCircle: !this.state.isCircle });
             }}
