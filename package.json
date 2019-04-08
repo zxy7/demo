@@ -10,7 +10,9 @@
     "react-dom": "16.8.3",
     "react-scripts": "2.0.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "antd": "^3.16.2"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
