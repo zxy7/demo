@@ -6,121 +6,67 @@ export default class Gojs extends React.Component {
     this.init();
   }
   init = () => {
-    // if (window.goSamples) goSamples(); // init for these samples -- you don't need to call this
     var $ = go.GraphObject.make; // for conciseness in defining templates
-
-    const myDiagram = $(
-      go.Diagram,
-      'myDiagramDiv', // must name or refer to the DIV HTML element
-      {
-        // have mouse wheel events zoom in and out instead of scroll up and down
-        'toolManager.mouseWheelBehavior': go.ToolManager.WheelZoom,
-        // support double-click in background creating a new node
-        'clickCreatingTool.archetypeNodeData': { text: 'new node' },
-        // enable undo & redo
-        'undoManager.isEnabled': true,
-      }
-    );
-
-    // when the document is modified, add a "*" to the title and enable the "Save" button
-    myDiagram.addDiagramListener('Modified', function(e) {
-      var button = document.getElementById('SaveButton');
-      if (button) button.disabled = !myDiagram.isModified;
-      var idx = document.title.indexOf('*');
-      if (myDiagram.isModified) {
-        if (idx < 0) document.title += '*';
-      } else {
-        if (idx >= 0) document.title = document.title.substr(0, idx);
-      }
+    // Must name or refer to the DIV HTML element
+    const myDiagram = $(go.Diagram, 'myDiagramDiv', {
+      // automatically scale the diagram to fit the viewport's size
+      initialAutoScale: go.Diagram.Uniform,
+      // disable user copying of parts
+      allowCopy: false,
+      // position all of the nodes and route all of the links
+      layout: $(go.LayeredDigraphLayout, {
+        direction: 90,
+        layerSpacing: 10,
+        columnSpacing: 15,
+        setsPortSpots: false,
+      }),
     });
-
-    // define the Node template
+    // replace the default Node template in the nodeTemplateMap
     myDiagram.nodeTemplate = $(
       go.Node,
-      'Auto',
-      new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
-      // define the node's outer shape, which will surround the TextBlock
+      'Auto', // the whole node panel
+      $(
+        go.TextBlock, // the text label
+        new go.Binding('text', 'key')
+      ),
       $(go.Shape, 'RoundedRectangle', {
-        parameter1: 20, // the corner has a large radius
-        fill: $(go.Brush, 'Linear', { 0: 'rgb(254, 201, 0)', 1: 'rgb(254, 162, 0)' }),
-        stroke: null,
-        portId: '', // this Shape is the Node's port, not the whole Node
-        fromLinkable: true,
-        fromLinkableSelfNode: true,
-        fromLinkableDuplicates: true,
-        toLinkable: true,
-        toLinkableSelfNode: true,
-        toLinkableDuplicates: true,
-        cursor: 'pointer',
+        fill: 'white',
+        minSize: new go.Size(120, NaN),
+        stroke: '#756875',
+        strokeWidth: 3,
       }),
       $(
-        go.TextBlock,
+        go.Panel,
+        go.Panel.Vertical,
         {
-          font: 'bold 11pt helvetica, bold arial, sans-serif',
-          editable: true, // editing the text automatically updates the model data
+          alignment: go.Spot.TopLeft,
+          alignmentFocus: go.Spot.TopLeft,
+          minSize: new go.Size(120, NaN),
         },
-        new go.Binding('text').makeTwoWay()
+        $(
+          go.Picture,
+          {
+            margin: new go.Margin(18, 0, 5, 0),
+            desiredSize: new go.Size(80, 40),
+            imageStretch: go.GraphObject.Uniform,
+          },
+          new go.Binding('source', 'key', this.convertKeyImage)
+          // new go.Binding('text', 'img', this.convertKeyImage)
+        ),
+        $(
+          go.TextBlock,
+          {
+            alignment: go.Spot.BottomCenter,
+            alignmentFocus: go.Spot.BottomCenter,
+            name: 'NODE_TEXT',
+            margin: 6,
+            font: '11pt avn85,NanumGothic,ng,dotum,AppleGothic,sans-serif',
+            editable: false,
+          },
+          new go.Binding('text', 'key')
+        )
       )
     );
-
-    // unlike the normal selection Adornment, this one includes a Button
-    myDiagram.nodeTemplate.selectionAdornmentTemplate = $(
-      go.Adornment,
-      'Spot',
-      $(
-        go.Panel,
-        'Auto',
-        $(go.Shape, { fill: null, stroke: 'blue', strokeWidth: 2 }),
-        $(go.Placeholder) // a Placeholder sizes itself to the selected Node
-      ),
-      // the button to create a "next" node, at the top-right corner
-      $(
-        'Button',
-        {
-          alignment: go.Spot.TopRight,
-          click: addNodeAndLink, // this function is defined below
-        },
-        $(go.Shape, 'PlusLine', { width: 6, height: 6 })
-      ) // end button
-    ); // end Adornment
-
-    // clicking the button inserts a new node to the right of the selected node,
-    // and adds a link to that new node
-    function addNodeAndLink(e, obj) {
-      var adornment = obj.part;
-      var diagram = e.diagram;
-      diagram.startTransaction('Add State');
-
-      // get the node data for which the user clicked the button
-      var fromNode = adornment.adornedPart;
-      var fromData = fromNode.data;
-      // create a new "State" data object, positioned off to the right of the adorned Node
-      var toData = { text: 'new' };
-      var p = fromNode.location.copy();
-      p.x += 200;
-      toData.loc = go.Point.stringify(p); // the "loc" property is a string, not a Point object
-      // add the new node data to the model
-      var model = diagram.model;
-      model.addNodeData(toData);
-
-      // create a link data from the old node data to the new node data
-      var linkdata = {
-        from: model.getKeyForNodeData(fromData), // or just: fromData.id
-        to: model.getKeyForNodeData(toData),
-        text: 'transition',
-      };
-      // and add the link data to the model
-      model.addLinkData(linkdata);
-
-      // select the new Node
-      var newnode = diagram.findNodeForData(toData);
-      diagram.select(newnode);
-
-      diagram.commitTransaction('Add State');
-
-      // if the new node is off-screen, scroll the diagram to show the new node
-      diagram.scrollToRect(newnode.actualBounds);
-    }
 
     // replace the default Link template in the linkTemplateMap
     myDiagram.linkTemplate = $(
@@ -137,11 +83,20 @@ export default class Gojs extends React.Component {
       new go.Binding('curviness'),
       $(
         go.Shape, // the link shape
-        { strokeWidth: 1.5 }
+        {
+          name: 'LINK',
+          isPanelMain: true,
+          strokeWidth: 1.5,
+        }
       ),
       $(
         go.Shape, // the arrowhead
-        { toArrow: 'standard', stroke: null }
+        {
+          name: 'ARROW',
+          toArrow: 'standard', // toArrow : kite, standard, OpenTriangle
+          stroke: null,
+          scale: 1.5,
+        }
       ),
       $(
         go.Panel,
@@ -162,43 +117,37 @@ export default class Gojs extends React.Component {
           'transition', // the label text
           {
             textAlign: 'center',
-            font: '9pt helvetica, arial, sans-serif',
+            font: '9pt helvetica, TOMCATal, sans-serif',
             margin: 4,
-            editable: true, // enable in-place editing
           },
-          // editing the text automatically updates the model data
           new go.Binding('text').makeTwoWay()
         )
       )
     );
-
-    // read in the JSON data from the "mySavedModel" element
-    // load();
-    myDiagram.model = go.Model.fromJson({
-      class: 'go.GraphLinksModel',
-      nodeKeyProperty: 'id',
-      nodeDataArray: [
-        { id: 0, loc: '120 120', text: 'Initial' },
-        { id: 1, loc: '330 120', text: 'First down' },
-        { id: 2, loc: '226 376', text: 'First up' },
-        { id: 3, loc: '60 276', text: 'Second down' },
-        { id: 4, loc: '226 226', text: 'Wait' },
-      ],
-      linkDataArray: [
-        { from: 0, to: 0, text: 'up or timer', curviness: -20 },
-        { from: 0, to: 1, text: 'down', curviness: 20 },
-        { from: 1, to: 0, text: 'up (moved)\nPOST', curviness: 20 },
-        { from: 1, to: 1, text: 'down', curviness: -20 },
-        { from: 1, to: 2, text: 'up (no move)' },
-        { from: 1, to: 4, text: 'timer' },
-        { from: 2, to: 0, text: 'timer\nPOST' },
-        { from: 2, to: 3, text: 'down' },
-        { from: 3, to: 0, text: 'up\nPOST\n(dblclick\nif no move)' },
-        { from: 3, to: 3, text: 'down or timer', curviness: 20 },
-        { from: 4, to: 0, text: 'up\nPOST' },
-        { from: 4, to: 4, text: 'down' },
-      ],
+    // the array of link data objects: the relationships between the nodes
+    var linkDataArray = [
+      { from: 'USER', to: 'TOMCAT', text: 1123 },
+      { from: 'TOMCAT', to: 'MYSQL', text: 1123 },
+      { from: 'TOMCAT', to: 'UNKNOWN', text: 1123 },
+      { from: 'QUEUE', to: 'UNKNOWN', text: 1123 },
+      { from: 'QUEUE', to: 'MYSQL', text: 1123 },
+      { from: 'QUEUE', to: 'ETC', text: 1123 },
+      { from: 'UNKNOWN', to: 'NODE', text: 123 },
+    ];
+    // create the model and assign it to the Diagram
+    myDiagram.model = $(go.GraphLinksModel, {
+      // automatically create node data objects for each "from" or "to" reference
+      // (set this property before setting the linkDataArray)
+      archetypeNodeData: {},
+      // process all of the link relationship data
+      linkDataArray: linkDataArray,
     });
+  };
+  convertKeyImage = key => {
+    if (!key) key = 'NE';
+    console.log(key);
+    return './images/' + key + '.png';
+    // return './images/USER.png';
   };
 
   render() {
@@ -206,7 +155,7 @@ export default class Gojs extends React.Component {
       <div>
         <div
           id="myDiagramDiv"
-          style={{ border: 'solid 1px black', width: '600px', height: '400px' }}
+          style={{ border: 'solid 1px black', width: '100%', height: '600px' }}
         />
       </div>
     );
